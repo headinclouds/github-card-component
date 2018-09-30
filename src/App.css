@@ -41,3 +41,14 @@
   width: 75px;
   height: 75px;
 }
+
+.container {
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: space-around;
+
+}
+
+.container div{
+  width: 50%
+}

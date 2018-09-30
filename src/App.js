@@ -5,12 +5,16 @@ import axios from 'axios';
 import './App.css';
 
 const Card = (props) => {
+  const addToFavorites = (item) => {
+    console.log(item)
+  }
   return(
     <div className="card">
       <img className="img" src={props.card.avatar_url} alt="img"/>
       <div className="description">
         <div>{props.card.login}</div>
         <div>{props.card.score}</div>
+        <div onClick={() => {addToFavorites(props.card.url)}}>+Add to favorites</div>
       </div>
     
     </div>
@@ -64,7 +68,16 @@ class App extends Component {
         </header>
         <div className="App-intro">
           <Form onSubmit={this.searchUser}/>
-          <CardList cards={this.state.cards} />
+          <div className="container">
+            <div className="search-results">  
+              <p>Search results: </p>    
+                <CardList cards={this.state.cards} />
+            </div>
+            <div>
+              <p>Favorites: </p>
+            </div>
+          </div>
+          
         </div>
       </div>
     );
