@@ -4,17 +4,45 @@ import axios from 'axios';
 
 import './App.css';
 
-const Card = (props) => {
-  const addToFavorites = (item) => {
+class Card extends Component {
+  favorites = []; 
+  addToFavorites = (item) => {
+    axios.get(item).then(resp=>{
+     this.props.favorites(resp.data);
+    })
+  }
+  render(){
+      return(
+    <div className="card">
+      <img className="img" src={this.props.card.avatar_url} alt="img"/>
+      <div className="description">
+        <div>{this.props.card.login}</div>
+        <div>{this.props.card.score}</div>
+        <button onClick={() => {this.addToFavorites(this.props.card.url)}}>+Add to favorites</button>
+      </div>
+    
+    </div>
+
+  );
+  }
+
+};
+
+
+const Favorite = (props) => {
+  const removeFromFav = (item) => {
     console.log(item)
   }
   return(
     <div className="card">
-      <img className="img" src={props.card.avatar_url} alt="img"/>
+      <img className="img" src={props.favorite.avatar_url} alt="img"/>
       <div className="description">
-        <div>{props.card.login}</div>
-        <div>{props.card.score}</div>
-        <div onClick={() => {addToFavorites(props.card.url)}}>+Add to favorites</div>
+        <div>{props.favorite.login}</div>
+        <div>{props.favorite.name}</div>
+        <div>{props.favorite.followers} followers</div>
+        <div>{props.favorite.bio}</div>
+
+        <div >- Remove from favorites</div>
       </div>
     
     </div>
@@ -26,7 +54,15 @@ const Card = (props) => {
   const CardList = (props) => {
     return (
       <div>
-        {props.cards.map(card => <Card card={card}  key={card.id.toString()}/>)}
+        {props.cards.map(card => <Card card={card} favorites={props.favorites} key={card.id.toString()}/>)}
+      </div>
+    )
+  }
+
+  const Favorites = (props) => {
+    return (
+      <div>
+        {props.favorites.map(favorite => <Favorite favorite={favorite}  key={favorite.id.toString()}/>)}
       </div>
     )
   }
@@ -36,7 +72,6 @@ const Card = (props) => {
     handleSubmit= (event) =>{
       event.preventDefault();
      axios.get(`https://api.github.com/search/users?q=${this.state.userName}`).then(resp=>{
-       console.log(resp.data.items)
        this.props.onSubmit(resp.data);
      })
     }
@@ -52,11 +87,18 @@ const Card = (props) => {
     }
   }
 class App extends Component {
-  
- state = {
-   cards: []}
+  favoritesArr = [];
+  state = {
+      cards: [],
+      favorites: []
+    }
   searchUser = (users) => {
     this.setState({cards : users.items})
+  }
+
+  addFavorites = (favorites) => {
+    this.favoritesArr.push(favorites);
+    this.setState({favorites: this.favoritesArr})
   }
 
   render() {
@@ -71,10 +113,12 @@ class App extends Component {
           <div className="container">
             <div className="search-results">  
               <p>Search results: </p>    
-                <CardList cards={this.state.cards} />
+                <CardList favorites={this.addFavorites} cards={this.state.cards} />
             </div>
             <div>
               <p>Favorites: </p>
+              <Favorites favorites={this.state.favorites} />
+
             </div>
           </div>
           
