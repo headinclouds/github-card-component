@@ -8,7 +8,7 @@ class Card extends Component {
   favorites = []; 
   addToFavorites = (item) => {
     axios.get(item).then(resp=>{
-     this.props.favorites(resp.data);
+     this.props.addFavorites(resp.data);
     })
   }
   render(){
@@ -17,8 +17,7 @@ class Card extends Component {
       <img className="img" src={this.props.card.avatar_url} alt="img"/>
       <div className="description">
         <div>{this.props.card.login}</div>
-        <div>{this.props.card.score}</div>
-        <button onClick={() => {this.addToFavorites(this.props.card.url)}}>+Add to favorites</button>
+        <button ref="btn" onClick={() => {this.addToFavorites(this.props.card.url)}}>+Add to favorites</button>
       </div>
     
     </div>
@@ -31,18 +30,18 @@ class Card extends Component {
 
 const Favorite = (props) => {
   const removeFromFav = (item) => {
-    console.log(item)
+    props.removeFromFav(item);
+
   }
   return(
     <div className="card">
       <img className="img" src={props.favorite.avatar_url} alt="img"/>
       <div className="description">
-        <div>{props.favorite.login}</div>
-        <div>{props.favorite.name}</div>
+        <a>{props.favorite.login}</a>
         <div>{props.favorite.followers} followers</div>
-        <div>{props.favorite.bio}</div>
+        <div>{props.favorite.location}</div>
 
-        <div >- Remove from favorites</div>
+        <button onClick={()=>removeFromFav(props.favorite.id)}>- Remove from favorites</button>
       </div>
     
     </div>
@@ -54,7 +53,9 @@ const Favorite = (props) => {
   const CardList = (props) => {
     return (
       <div>
-        {props.cards.map(card => <Card card={card} favorites={props.favorites} key={card.id.toString()}/>)}
+        {props.cards.sort((a, b) => a.name - b.name)
+                    .map(card => <Card card={card} addFavorites={props.addFavorites}
+                                        key={card.id.toString()}/>)}
       </div>
     )
   }
@@ -62,7 +63,7 @@ const Favorite = (props) => {
   const Favorites = (props) => {
     return (
       <div>
-        {props.favorites.map(favorite => <Favorite favorite={favorite}  key={favorite.id.toString()}/>)}
+        {props.favorites.sort((a, b) => a.name - b.name).map(favorite => <Favorite favorite={favorite} removeFromFav={props.removeFromFav} key={favorite.id.toString()}/>)}
       </div>
     )
   }
@@ -96,9 +97,29 @@ class App extends Component {
     this.setState({cards : users.items})
   }
 
-  addFavorites = (favorites) => {
-    this.favoritesArr.push(favorites);
+  addFavorites = (favorite) => {
+    let indexRemove;
+    this.favoritesArr.push(favorite);
+    this.state.cards.map((val, index) => {
+      if (val.id===favorite.id){
+        indexRemove = index;
+      }
+    });
+    this.state.cards.splice(indexRemove, 1);
     this.setState({favorites: this.favoritesArr})
+  }
+
+  removeFromFav = (favorite) => {
+    let indexRemove;
+    this.favoritesArr.map((val, index) => {
+      if (val.id===favorite){
+        indexRemove = index;
+        this.state.cards.push(val);
+      }
+    });
+    this.favoritesArr.splice(indexRemove, 1);
+    this.setState({favorites: this.favoritesArr});
+
   }
 
   render() {
@@ -113,12 +134,11 @@ class App extends Component {
           <div className="container">
             <div className="search-results">  
               <p>Search results: </p>    
-                <CardList favorites={this.addFavorites} cards={this.state.cards} />
+                <CardList addFavorites={this.addFavorites}  cards={this.state.cards} />
             </div>
             <div>
               <p>Favorites: </p>
-              <Favorites favorites={this.state.favorites} />
-
+              <Favorites favorites={this.state.favorites} removeFromFav={this.removeFromFav}/>
             </div>
           </div>
           
