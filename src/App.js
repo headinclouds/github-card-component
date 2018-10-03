@@ -14,10 +14,12 @@ class Card extends Component {
   render(){
       return(
     <div className="card">
+          <div className="card-body">
       <img className="img" src={this.props.card.avatar_url} alt="img"/>
-      <div className="description">
-        <div>{this.props.card.login}</div>
-        <button ref="btn" onClick={() => {this.addToFavorites(this.props.card.url)}}>+Add to favorites</button>
+      </div>
+      <div className="card-body">
+        <h5 className="card-title">{this.props.card.login}</h5>
+        <button ref="btn" className="btn btn-primary" onClick={() => {this.addToFavorites(this.props.card.url)}}>+Add to favorites</button>
       </div>
     
     </div>
@@ -35,13 +37,15 @@ const Favorite = (props) => {
   }
   return(
     <div className="card">
-      <img className="img" src={props.favorite.avatar_url} alt="img"/>
-      <div className="description">
-        <a>{props.favorite.login}</a>
+      <div className="card-body">
+        <img className="img" src={props.favorite.avatar_url} alt="img"/>
+      </div>
+      <div className="card-body">
+        <h5 className="card-title">{props.favorite.login}</h5>
         <div>{props.favorite.followers} followers</div>
         <div>{props.favorite.location}</div>
 
-        <button onClick={()=>removeFromFav(props.favorite.id)}>- Remove from favorites</button>
+        <button className="btn btn-primary" onClick={()=>removeFromFav(props.favorite.id)}>- Remove from favorites</button>
       </div>
     
     </div>
@@ -78,11 +82,14 @@ const Favorite = (props) => {
     }
     render (){
       return(
-        <form onSubmit={this.handleSubmit}>
-          <input type="text" value={this.state.userName}
+        <form className="input-group mb-3" onSubmit={this.handleSubmit}>
+          <input type="text" className="form-control" value={this.state.userName}
           onChange={(event)=> this.setState({userName: event.target.value})}
           />
-          <button type="submit">Submit</button>
+          <div className="input-group-append">
+          <button className="btn btn-outline-secondary" type="submit">Submit</button>
+
+          </div>
         </form>
       )
     }
@@ -130,15 +137,21 @@ class App extends Component {
           <h1 className="App-title">Welcome to React</h1>
         </header>
         <div className="App-intro">
-          <Form onSubmit={this.searchUser}/>
           <div className="container">
-            <div className="search-results">  
+          <div className="row">
+          <div className="col">  
+            <Form onSubmit={this.searchUser}/>
+            </div>
+          </div>
+          <div className="row">
+            <div className="col">  
               <p>Search results: </p>    
                 <CardList addFavorites={this.addFavorites}  cards={this.state.cards} />
             </div>
-            <div>
+            <div className="col">
               <p>Favorites: </p>
               <Favorites favorites={this.state.favorites} removeFromFav={this.removeFromFav}/>
+            </div>
             </div>
           </div>
           
