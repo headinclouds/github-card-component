@@ -1,24 +1,25 @@
 import React, { Component } from 'react';
+import {DetailedCard} from './DetailedCard';
 import logo from './logo.svg';
 import axios from 'axios';
-
+import {BrowserRouter, Route, Switch, Link} from 'react-router-dom';
 import './App.css';
 
 class Card extends Component {
   favorites = []; 
   addToFavorites = (item) => {
-    axios.get(item).then(resp=>{
-     this.props.addFavorites(resp.data);
+      axios.get(item).then(resp=>{
+      this.props.addFavorites(resp.data);
     })
   }
   render(){
       return(
     <div className="card">
-          <div className="card-body">
-      <img className="img" src={this.props.card.avatar_url} alt="img"/>
+        <div className="card-body">
+            <img className="img" src={this.props.card.avatar_url} alt="img"/>
       </div>
       <div className="card-body">
-        <h5 className="card-title">{this.props.card.login}</h5>
+        <Link to={`/user/${this.props.card.login}`} className="card-title">{this.props.card.login}</Link>
         <button ref="btn" className="btn btn-primary" onClick={() => {this.addToFavorites(this.props.card.url)}}>+Add to favorites</button>
       </div>
     
@@ -145,13 +146,25 @@ class App extends Component {
           </div>
           <div className="row">
             <div className="col">  
-              <p>Search results: </p>    
-                <CardList addFavorites={this.addFavorites}  cards={this.state.cards} />
+            <p>Search results: </p>
+            <BrowserRouter>
+            <Switch>
+            <Route path="/" exact render={
+              ()=> { return <CardList addFavorites={this.addFavorites}  cards={this.state.cards} />}}></Route>
+              <Route path="/user/:id" component={DetailedCard}></Route>
+
+                </Switch>
+
+              </BrowserRouter>
+
             </div>
             <div className="col">
               <p>Favorites: </p>
               <Favorites favorites={this.state.favorites} removeFromFav={this.removeFromFav}/>
             </div>
+            </div>
+            <div className="row">
+              <div className="col"></div>
             </div>
           </div>
           
