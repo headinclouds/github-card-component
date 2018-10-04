@@ -1,5 +1,5 @@
 
-Github-card-component
+#Github-card-component
 
 Component for quick search among github users, add to favorites, see details.
 Published https://headinclouds.github.io/github-card-component/
