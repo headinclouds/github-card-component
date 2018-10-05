@@ -41,11 +41,19 @@
   margin-left: 10px; 
 }
 .card-title {
-  display: block
+  display: block;
+  word-break: break-all;
 }
 .img{
   width: 75px;
   height: 75px;
+  margin: 1.25em
+}
+.img-large {
+  width: 275px;
+  height: 275px;
+  margin: 1.25em
+
 }
 
 
