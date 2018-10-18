@@ -149,7 +149,7 @@ class App extends Component {
                 <Form onSubmit={this.searchUser} />
               </div>
             </div>
-            <BrowserRouter >
+            <BrowserRouter basename="github-card-component">
               <Switch>
                 <Route path="/" exact render={
                   () => {
